@@ -25,3 +25,6 @@ No test framework is configured yet.
 - Route props use Next's generated global types (e.g. `LayoutProps<"/">`, `PageProps<...>`) rather than hand-written prop interfaces.
 - Path alias `@/*` maps to the repo root.
 - TypeScript is `strict`.
+
+## Skills
+Usa siempre > /frontend-design para diseñar la interfaz de usuario
