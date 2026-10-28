@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Leaderboard } from "@/components/leaderboard";
 import { GAMES, getGame, seededScores } from "@/lib/games";
 
@@ -7,7 +8,17 @@ export function generateStaticParams() {
   return GAMES.map((g) => ({ id: g.id }));
 }
 
-export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
+// With Partial Prefetching, awaiting params inside Suspense lets unlisted ids stream
+// into the prerendered shell (layout + nav) instead of rendering an empty body.
+export default function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
+  return (
+    <Suspense>
+      <GameDetail params={params} />
+    </Suspense>
+  );
+}
+
+async function GameDetail({ params }: Pick<PageProps<"/juegos/[id]">, "params">) {
   const { id } = await params;
   const game = getGame(id);
   if (!game) notFound();
