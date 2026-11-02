@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useUser } from "@/components/user-provider";
 
-type Section = "inicio" | "biblioteca" | "salon" | "auth";
+type Section = "inicio" | "biblioteca" | "salon" | "acerca" | "auth";
 
 function sectionOf(pathname: string | null): Section | null {
   if (pathname === null) return null;
   if (pathname === "/") return "inicio";
   if (pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos")) return "biblioteca";
   if (pathname.startsWith("/salon")) return "salon";
+  if (pathname.startsWith("/acerca")) return "acerca";
   if (pathname.startsWith("/auth")) return "auth";
   return null;
 }
@@ -56,7 +57,9 @@ function NavBar({ pathname }: { pathname: string | null }) {
           <Link href="/salon" className={activeClass("salon")}>
             Salón de la Fama
           </Link>
-          <AboutSoon />
+          <Link href="/acerca" className={activeClass("acerca")}>
+            Acerca de
+          </Link>
         </div>
         <div className="spacer"></div>
         <div className="coin-counter">
@@ -91,7 +94,9 @@ function NavBar({ pathname }: { pathname: string | null }) {
         <Link href="/salon" className={activeClass("salon")} onClick={close}>
           Salón de la Fama
         </Link>
-        <AboutSoon />
+        <Link href="/acerca" className={activeClass("acerca")} onClick={close}>
+          Acerca de
+        </Link>
         <Link href="/auth" className={activeClass("auth")} onClick={close}>
           {user ? "Cuenta" : "Iniciar Sesión"}
         </Link>
@@ -101,14 +106,5 @@ function NavBar({ pathname }: { pathname: string | null }) {
         </div>
       </aside>
     </>
-  );
-}
-
-// The "Acerca de" page is not built yet (SPEC 02), so the entry is shown but never navigates.
-function AboutSoon() {
-  return (
-    <span className="nav-disabled" aria-disabled="true">
-      Acerca de <span className="soon-badge">PRONTO</span>
-    </span>
   );
 }
