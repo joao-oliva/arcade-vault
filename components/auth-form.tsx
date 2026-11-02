@@ -6,10 +6,10 @@ import { useUser } from "@/components/user-provider";
 
 type Tab = "in" | "up";
 
-export function AuthForm() {
+export function AuthForm({ initialTab = "in" }: { initialTab?: Tab }) {
   const router = useRouter();
   const { login, logout } = useUser();
-  const [tab, setTab] = useState<Tab>("in");
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
@@ -17,12 +17,12 @@ export function AuthForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     login(user || "PLAYER1");
-    router.push("/");
+    router.push("/biblioteca");
   };
 
   const playAsGuest = () => {
     logout();
-    router.push("/");
+    router.push("/biblioteca");
   };
 
   return (
