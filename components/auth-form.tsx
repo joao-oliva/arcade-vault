@@ -6,10 +6,10 @@ import { useUser } from "@/components/user-provider";
 
 type Tab = "in" | "up";
 
-export function AuthForm() {
+export function AuthForm({ initialTab = "in" }: { initialTab?: Tab }) {
   const router = useRouter();
   const { login, logout } = useUser();
-  const [tab, setTab] = useState<Tab>("in");
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
