@@ -19,7 +19,7 @@ export default function NotFound() {
         >
           Esta dirección no lleva a ningún juego del vault. Vuelve a la biblioteca y elige otro cartucho.
         </p>
-        <Link href="/" className="btn lg">
+        <Link href="/biblioteca" className="btn lg">
           VOLVER AL VAULT
         </Link>
       </section>

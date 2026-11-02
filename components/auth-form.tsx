@@ -17,12 +17,12 @@ export function AuthForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     login(user || "PLAYER1");
-    router.push("/");
+    router.push("/biblioteca");
   };
 
   const playAsGuest = () => {
     logout();
-    router.push("/");
+    router.push("/biblioteca");
   };
 
   return (

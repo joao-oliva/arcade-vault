@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useUser } from "@/components/user-provider";
 
-type Section = "biblioteca" | "salon" | "auth";
+type Section = "inicio" | "biblioteca" | "salon" | "auth";
 
 function sectionOf(pathname: string | null): Section | null {
   if (pathname === null) return null;
-  if (pathname === "/" || pathname.startsWith("/juegos")) return "biblioteca";
+  if (pathname === "/") return "inicio";
+  if (pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos")) return "biblioteca";
   if (pathname.startsWith("/salon")) return "salon";
   if (pathname.startsWith("/auth")) return "auth";
   return null;
@@ -46,12 +47,16 @@ function NavBar({ pathname }: { pathname: string | null }) {
           </div>
         </Link>
         <div className="links">
-          <Link href="/" className={activeClass("biblioteca")}>
+          <Link href="/" className={activeClass("inicio")}>
+            Inicio
+          </Link>
+          <Link href="/biblioteca" className={activeClass("biblioteca")}>
             Biblioteca
           </Link>
           <Link href="/salon" className={activeClass("salon")}>
             Salón de la Fama
           </Link>
+          <AboutSoon />
         </div>
         <div className="spacer"></div>
         <div className="coin-counter">
@@ -77,12 +82,16 @@ function NavBar({ pathname }: { pathname: string | null }) {
         <div className="pixel neon-cyan" style={{ fontSize: 11, marginBottom: 16 }}>
           MENÚ
         </div>
-        <Link href="/" className={activeClass("biblioteca")} onClick={close}>
+        <Link href="/" className={activeClass("inicio")} onClick={close}>
+          Inicio
+        </Link>
+        <Link href="/biblioteca" className={activeClass("biblioteca")} onClick={close}>
           Biblioteca
         </Link>
         <Link href="/salon" className={activeClass("salon")} onClick={close}>
           Salón de la Fama
         </Link>
+        <AboutSoon />
         <Link href="/auth" className={activeClass("auth")} onClick={close}>
           {user ? "Cuenta" : "Iniciar Sesión"}
         </Link>
@@ -92,5 +101,14 @@ function NavBar({ pathname }: { pathname: string | null }) {
         </div>
       </aside>
     </>
+  );
+}
+
+// The "Acerca de" page is not built yet (SPEC 02), so the entry is shown but never navigates.
+function AboutSoon() {
+  return (
+    <span className="nav-disabled" aria-disabled="true">
+      Acerca de <span className="soon-badge">PRONTO</span>
+    </span>
   );
 }
