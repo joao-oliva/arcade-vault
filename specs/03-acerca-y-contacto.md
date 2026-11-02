@@ -33,6 +33,7 @@ En la plantilla el formulario solo simula el envío. Aquí se conecta a Resend p
   - **Error:** la misma terminal en variante roja, con líneas `[OK]` y una línea final `[ERROR] <mensaje>` y el botón "REINTENTAR", que vuelve al formulario con los datos intactos.
 - Variables de entorno en `.env.local` (ya creado con las claves vacías e ignorado por `.gitignore`): `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y `CONTACT_FROM_EMAIL` (por defecto `Arcade Vault <onboarding@resend.dev>`). El usuario rellena los valores. Se añade `.env.example` con las tres claves vacías y la excepción `!.env.example` en `.gitignore`, porque hoy la regla `.env*` también lo ignora.
 - Nav (escritorio y panel móvil): "Acerca de" pasa a ser un `Link` a `/acerca` con estado activo en `/acerca`. Se eliminan `AboutSoon` y los estilos `.nav-disabled` y `.soon-badge`.
+- Corrección del desbordamiento del Nav en móvil (detectado durante la implementación, previo a esta spec): a 480 px o menos se oculta `.av-nav .auth-btn`, porque el panel móvil ya enlaza a `/auth`. Sin esto, logo + botón de sesión + hamburguesa producen scroll horizontal a 375 px en todas las páginas.
 - Portar a `app/globals.css` el bloque `ABOUT PAGE` de `references/templates/home-about/styles.css`, más la variante de error de la terminal y la regla de `prefers-reduced-motion` para los píxeles del divisor.
 - Añadir la dependencia `resend`.
 
@@ -115,7 +116,7 @@ Convenciones:
 6. Crear `lib/contact.ts` con `validateContact` y `CONTACT_LIMITS`.
 7. Crear `app/api/contact/route.ts` con `POST`: parsear el JSON, honeypot, `validateContact`, lectura de las variables de entorno dentro del handler, llamada a `resend.emails.send` con `replyTo`, `subject`, `text` y `html` escapado, y respuestas según la tabla del modelo de datos. Probarlo con `curl` antes de tener el formulario.
 8. Crear `components/about/contact-form.tsx` (cliente): inputs controlados, shake si hay vacíos, honeypot oculto (`aria-hidden`, `tabIndex={-1}`, `autoComplete="off"`), `fetch("/api/contact", { method: "POST", … })` y las vistas formulario, enviando, éxito y error según `FormStatus`. Sustituir el placeholder del paso 5.
-9. Actualizar `components/nav.tsx`: añadir la sección `"acerca"` en `sectionOf`, poner `Link` a `/acerca` en escritorio y móvil y eliminar `AboutSoon`.
+9. Actualizar `components/nav.tsx`: añadir la sección `"acerca"` en `sectionOf`, poner `Link` a `/acerca` en escritorio y móvil y eliminar `AboutSoon`. Añadir en `app/globals.css` la regla `@media (max-width: 480px)` que oculta `.av-nav .auth-btn`.
 10. Probar a mano con la API key que el usuario coloque en `.env.local`: envío correcto, error de validación del servidor (`curl` con mensaje corto), API key ausente, cuerpo inválido y honeypot relleno. Si la key aún no está, probar todo salvo el envío correcto y dejarlo anotado.
 11. Pasar `npm run lint` y `npm run build` sin errores ni warnings nuevos.
 
@@ -142,7 +143,7 @@ Convenciones:
 - [ ] `RESEND_API_KEY` no aparece en ningún bundle de cliente (buscarla en `.next/static` tras el build).
 - [ ] El divisor y la sección de contacto aparecen con la animación reveal al hacer scroll. Con `prefers-reduced-motion: reduce` se ven sin animación y los píxeles no parpadean.
 - [ ] Con JavaScript deshabilitado, todo el contenido de `/acerca` es visible.
-- [ ] A 375 px de ancho `/acerca` no produce scroll horizontal y el formulario ocupa una sola columna.
+- [ ] A 375 px de ancho `/acerca` no produce scroll horizontal (incluido el Nav, sin el botón de sesión, que queda en el panel móvil) y el formulario ocupa una sola columna.
 - [ ] No aparecen errores de hidratación en la consola en `/acerca`.
 - [ ] `.env.example` existe con las tres claves y git lo rastrea. `.env.local` sigue ignorado.
 
@@ -165,6 +166,7 @@ Convenciones:
 - **Sí:** correo en texto plano más HTML mínimo escapado. Suficiente para un buzón interno y sin riesgo de inyección HTML.
 - **No:** React Email. Más dependencias y trabajo para un correo que solo lee el equipo.
 - **Sí:** habilitar "Acerca de" en el Nav y borrar `AboutSoon`, `.nav-disabled` y `.soon-badge`. No queda código muerto.
+- **Sí:** ocultar el botón de sesión del Nav a 480 px o menos. Decisión del usuario durante la implementación: el desbordamiento era previo, pero impedía cumplir el criterio de 375 px, y el panel móvil ya ofrece "Iniciar Sesión" / "Cuenta".
 - **Sí:** la página es un Server Component y solo `contact-form.tsx` y `reveal-on-scroll.tsx` son cliente. Minimiza el JavaScript enviado.
 - **Sí:** reutilizar `RevealOnScroll` de la SPEC 02 en lugar del `useEffect` de la plantilla. Ya cubre `prefers-reduced-motion` y el caso sin JavaScript.
 
